@@ -30,6 +30,13 @@ let package = Package(
             path: "Sources/DocCMiddleware",
             swiftSettings: [.enableExperimentalFeature("StrictConcurrency=complete")]
         ),
+        .target(
+            name: DocCMiddleware.sample,
+            dependencies: [
+                .byName(name: DocCMiddleware.target)
+            ],
+            path: "Samples/DocCMiddleware"
+        ),
         .testTarget(
             name: DocCMiddleware.test,
             dependencies: [
@@ -45,6 +52,7 @@ let package = Package(
 
 enum DocCMiddleware {
     static let package = "hummingbird-docc"
+    static let sample = "\(DocCMiddleware.target)Sample"
     static let target = "DocCMiddleware"
-    static let test = "\(DocCMiddleware.target)Tests"
+    static let test = "\(DocCMiddleware.target)Test"
 }
