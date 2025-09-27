@@ -33,9 +33,7 @@ struct LogHandlerMock {
     // MARK: Computed
     
     /// A list of all the logged events that are being persisted in the recorder.
-    var entries: [LogEntry] {
-        get async { await recorder.entries }
-    }
+    var entries: [LogEntry] { recorder.entries }
     
 }
 
@@ -63,13 +61,25 @@ struct LogEntry: Equatable {
 // MARK: - LogRecorder
 
 extension LogHandlerMock {
-    /// An actor that persists all the events logged by the ``LogHandlerMock`` mock handler.
-    actor LogRecorder {
+    /// A class that records all the events logged by the ``LogHandlerMock`` mock handler.
+    ///
+    /// This class conforms to the `Sendable` protocol by using the `@unchecked` modifier because a `NSLock`type is used to handle the access to the logged events in a thread-safe way.
+    final class LogRecorder: @unchecked Sendable {
         
         // MARK: Properties
         
+        /// A list of all the logged events persisted in a thread-safe way.
+        private(set) var _entries: [LogEntry] = []
+        
+        /// A type that coordinates the access to the persisted logged events in a thread-safe way.
+        private let lock: NSLock = .init()
+        
+        // MARK: Computed
+        
         /// A list of all the logged events.
-        private(set) var entries: [LogEntry] = []
+        var entries: [LogEntry] {
+            lock.withLock { _entries }
+        }
         
         // MARK: Functions
         
@@ -84,13 +94,15 @@ extension LogHandlerMock {
             metadata: Logger.Metadata?,
             message: Logger.Message,
             source: String
-        ) async {
-            entries += [.init(
-                level: level,
-                metadata: metadata,
-                message: message,
-                source: source
-            )]
+        ) {
+            lock.withLock {
+                _entries += [.init(
+                    level: level,
+                    metadata: metadata,
+                    message: message,
+                    source: source
+                )]
+            }
         }
 
     }
@@ -130,12 +142,12 @@ extension LogHandlerMock: LogHandler {
         function: String,
         line: UInt
     ) {
-        Task { await recorder.record(
+        recorder.record(
             level: level,
             metadata: metadata,
             message: message,
             source: source
-        )}
+        )
     }
     
 }
