@@ -190,7 +190,7 @@ private extension ServeURIUseCaseTests {
                 #expect(contentLength == 0)
             }
             
-            let events = await logHandler.entries
+            let events = logHandler.entries
             
             if shouldEventBeLogged(
                 logLevel: logLevel,

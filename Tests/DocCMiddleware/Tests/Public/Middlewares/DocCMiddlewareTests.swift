@@ -385,7 +385,7 @@ private extension DocCMiddlewareTests {
         // THEN
         #expect(result.status == statusCode)
         
-        let events = await logHandler.entries
+        let events = logHandler.entries
         
         if statusCode == .movedPermanently, let uriRedirect {
             #expect(result.body.contentLength == 0)
@@ -483,7 +483,7 @@ private extension DocCMiddlewareTests {
                 #expect(contentLength == 0)
             }
             
-            let events = await logHandler.entries
+            let events = logHandler.entries
             
             if shouldEventBeLogged(
                 logLevel: logLevel,

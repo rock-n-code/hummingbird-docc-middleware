@@ -107,7 +107,7 @@ private extension RedirectURIUseCaseTests {
             .contentLength: "0"
         ])
 
-        let events = await logHandler.entries
+        let events = logHandler.entries
 
         if shouldEventBeLogged(logLevel) {
             #expect(!events.isEmpty)
