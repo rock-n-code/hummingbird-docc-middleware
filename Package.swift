@@ -44,7 +44,7 @@ let package = Package(
 // MARK: - Constants
 
 enum DocCMiddleware {
-    static let package = "hummingbird-docc-middleware"
+    static let package = "hummingbird-docc"
     static let target = "DocCMiddleware"
     static let test = "\(DocCMiddleware.target)Tests"
 }
